@@ -4,7 +4,7 @@ import cc.carm.app.aliddns.Main;
 import cc.carm.app.aliddns.conf.AppConfig;
 import cc.carm.app.aliddns.conf.QueryConfig;
 import cc.carm.app.aliddns.model.RequestRegistry;
-import cc.carm.app.aliddns.model.UpdateRequest;
+import cc.carm.app.aliddns.model.AliyunUpdateRequest;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -18,7 +18,7 @@ import java.util.Map;
 public class RequestManager {
 
     private final SimpleDateFormat format;
-    public final HashMap<String, UpdateRequest> requests;
+    public final HashMap<String, AliyunUpdateRequest> requests;
 
     public RequestManager() {
         this.requests = new HashMap<>();
@@ -40,25 +40,25 @@ public class RequestManager {
         Main.info("[" + this.format.format(new Date()) + "]" + " 开始执行第" + getRegistry().getUpdateCount() + "次更新...");
 
         Main.info("从 " + QueryConfig.V4.getNotNull() + " 获取IPv4地址...");
-        String IPv4 = getCurrentHostIP(false);
-        Main.info("     获取完成，当前IPv4地址为 " + IPv4);
+        String ipv4 = getCurrentHostIP(false);
+        Main.info("     获取完成，当前IPv4地址为 " + ipv4);
 
-        String IPv6 = null;
+        String ipv6 = null;
         if (isIPV6Enabled() && getRegistry().hasV6Request()) {
             Main.info("从 " + QueryConfig.V6.getNotNull() + " 获取IPv6地址...");
-            IPv6 = getCurrentHostIP(true);
-            Main.info("     获取完成，当前IPv6地址为 " + IPv6);
+            ipv6 = getCurrentHostIP(true);
+            Main.info("     获取完成，当前IPv6地址为 " + ipv6);
         }
 
         Main.info("执行更新任务列表...");
-        for (Map.Entry<String, UpdateRequest> entry : getRequests().entrySet()) {
-            UpdateRequest currentRequest = entry.getValue();
-            if (currentRequest.isIpv6() && IPv6 == null) {
+        for (Map.Entry<String, AliyunUpdateRequest> entry : getRequests().entrySet()) {
+            AliyunUpdateRequest currentRequest = entry.getValue();
+            if (currentRequest.isIPv6() && ipv6 == null) {
                 Main.info("记录 [" + entry.getKey() + "] 为IPv6任务，但本实例未启用IPv6，跳过。");
                 continue;
             }
             try {
-                currentRequest.doUpdate(currentRequest.isIpv6() ? IPv6 : IPv4);
+                currentRequest.doUpdate(currentRequest.isIPv6() ? ipv6 : ipv4);
             } catch (Exception exception) {
                 Main.severe("在更新请求 [" + entry.getKey() + "] 时发生问题，请检查配置。");
                 exception.printStackTrace();
@@ -68,7 +68,7 @@ public class RequestManager {
         getRegistry().countUpdate();
     }
 
-    public HashMap<String, UpdateRequest> getRequests() {
+    public HashMap<String, AliyunUpdateRequest> getRequests() {
         return new HashMap<>(getRegistry().listRequests());
     }
 

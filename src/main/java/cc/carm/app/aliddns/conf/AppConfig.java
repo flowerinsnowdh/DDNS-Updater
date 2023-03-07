@@ -25,6 +25,7 @@ public class AppConfig extends ConfigurationRoot {
     @HeaderComment({"", "本机IP查询接口配置。", "用于获取对应的IP地址，以更新到域名记录。"})
     public static final Class<?> QUERY = QueryConfig.class;
 
+    // 更新域名/记录列表
     @HeaderComment({
             "", "更新任务配置。",
             "具体配置请参考 https://github.com/CarmJos/AliDDNS-Updater/blob/master/.doc/REQUEST.md",

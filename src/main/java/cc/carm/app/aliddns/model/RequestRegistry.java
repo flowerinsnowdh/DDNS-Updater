@@ -8,19 +8,20 @@ import org.jetbrains.annotations.NotNull;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+// 配置文件的requests节点
 public class RequestRegistry {
 
-    protected final LinkedHashMap<String, UpdateRequest> requests;
+    protected final LinkedHashMap<String, AliyunUpdateRequest> requests;
     protected int updateCount;
     protected boolean hasV6Request;
 
-    public RequestRegistry(LinkedHashMap<String, UpdateRequest> requests) {
+    public RequestRegistry(LinkedHashMap<String, AliyunUpdateRequest> requests) {
         this.requests = requests;
         this.updateCount = 1;
-        this.hasV6Request = requests.values().stream().anyMatch(UpdateRequest::isIpv6);
+        this.hasV6Request = requests.values().stream().anyMatch(AliyunUpdateRequest::isIPv6);
     }
 
-    public LinkedHashMap<String, UpdateRequest> listRequests() {
+    public LinkedHashMap<String, AliyunUpdateRequest> listRequests() {
         return requests;
     }
 
@@ -43,13 +44,13 @@ public class RequestRegistry {
     }
 
     public static RequestRegistry loadFrom(ConfigurationWrapper<?> section) {
-        LinkedHashMap<String, UpdateRequest> data = new LinkedHashMap<>();
+        LinkedHashMap<String, AliyunUpdateRequest> data = new LinkedHashMap<>();
         if (section == null) return new RequestRegistry(data);
         for (String taskName : section.getKeys(false)) {
             ConfigurationWrapper<?> requestSection = section.getConfigurationSection(taskName);
             if (requestSection == null) continue;
 
-            UpdateRequest request = new UpdateRequest(
+            AliyunUpdateRequest request = new AliyunUpdateRequest(
                     requestSection.getString("access-key", "xx"),
                     requestSection.getString("access-secret", "xx"),
                     requestSection.getString("domain", "xx"),
@@ -57,7 +58,7 @@ public class RequestRegistry {
                     requestSection.getBoolean("ipv6", false)
             );
 
-            if (request.isIpv6() && !RequestManager.isIPV6Enabled()) {
+            if (request.isIPv6() && !RequestManager.isIPV6Enabled()) {
                 Main.info("记录 [" + taskName + "] 为IPv6任务，但本实例未启用IPv6，跳过加载。");
                 continue;
             }
@@ -68,8 +69,8 @@ public class RequestRegistry {
     }
 
     public static RequestRegistry defaults() {
-        LinkedHashMap<String, UpdateRequest> data = new LinkedHashMap<>();
-        data.put("demo", new UpdateRequest("YOUR-ACCESS-KEY", "YOUR-ACCESS-SECRET", "example.com", "@", false));
+        LinkedHashMap<String, AliyunUpdateRequest> data = new LinkedHashMap<>();
+        data.put("demo", new AliyunUpdateRequest("YOUR-ACCESS-KEY", "YOUR-ACCESS-SECRET", "example.com", "@", false));
         return new RequestRegistry(data);
     }
 
