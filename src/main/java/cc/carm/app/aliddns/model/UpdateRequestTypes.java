@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * 已支持的UpdateRequest类型
+ */
 public class UpdateRequestTypes {
     @DeclaredUpdateRequestType
     public static UpdateRequestType<AliyunUpdateRequest> ALIYUN = new UpdateRequestType<>(

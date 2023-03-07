@@ -69,6 +69,8 @@ public class RequestRegistry {
                 }
 
                 data.put(taskName, request);
+            } else {
+                Main.info("记录 [" + taskName + "] 的类型 [" + type + "] 未知，跳过加载。");
             }
         }
         return new RequestRegistry(data);
