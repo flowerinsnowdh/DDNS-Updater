@@ -12,11 +12,17 @@ import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-// 代表一个更新对象
+/**
+ * <p>代表一个阿里云更新对象</p>
+ * <p>阿里云有2个特殊数据</p>
+ * <ul>
+ *     <li>access-key</li>
+ *     <li>access-secret</li>
+ * </ul>
+ */
 public class AliyunUpdateRequest extends AbstractUpdateRequest {
     @NotNull
     private final String accessKey;
@@ -30,15 +36,9 @@ public class AliyunUpdateRequest extends AbstractUpdateRequest {
     }
 
 
-    public Map<String, Object> serialize() {
-        Map<String, Object> data = new LinkedHashMap<>();
-        data.put("domain", getDomain());
-        data.put("record", getRecord());
-        data.put("ipv6", isIPv6());
-
+    public void serialize(Map<String, Object> data) {
         data.put("access-key", getAccessKey());
         data.put("access-secret", getAccessKeySecret());
-        return data;
     }
 
     @NotNull

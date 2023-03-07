@@ -2,6 +2,8 @@ package cc.carm.app.aliddns.model;
 
 import com.aliyuncs.exceptions.ClientException;
 
+import java.util.Map;
+
 public interface UpdateRequest {
     /**
      * 获取请求类型
@@ -9,6 +11,14 @@ public interface UpdateRequest {
      * @return 请求类型
      */
     UpdateRequestType getType();
+
+    /**
+     * 获取请求类型序列化名
+     *
+     * @see UpdateRequestType#id
+     * @return 请求类型序列化名
+     */
+    String getTypeID();
 
     /**
      * 获取域名
@@ -55,4 +65,11 @@ public interface UpdateRequest {
      * @return 记录类型
      */
     String getRecordType();
+
+    /**
+     * 序列化
+     *
+     * @return 序列化
+     */
+    Map<String, Object> serialize();
 }

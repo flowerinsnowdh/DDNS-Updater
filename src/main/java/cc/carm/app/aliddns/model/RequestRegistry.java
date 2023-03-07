@@ -11,17 +11,17 @@ import java.util.Map;
 // 配置文件的requests节点
 public class RequestRegistry {
 
-    protected final LinkedHashMap<String, AliyunUpdateRequest> requests;
+    protected final LinkedHashMap<String, UpdateRequest> requests;
     protected int updateCount;
     protected boolean hasV6Request;
 
-    public RequestRegistry(LinkedHashMap<String, AliyunUpdateRequest> requests) {
+    public RequestRegistry(LinkedHashMap<String, UpdateRequest> requests) {
         this.requests = requests;
         this.updateCount = 1;
-        this.hasV6Request = requests.values().stream().anyMatch(AliyunUpdateRequest::isIPv6);
+        this.hasV6Request = requests.values().stream().anyMatch(UpdateRequest::isIPv6);
     }
 
-    public LinkedHashMap<String, AliyunUpdateRequest> listRequests() {
+    public LinkedHashMap<String, UpdateRequest> listRequests() {
         return requests;
     }
 
@@ -44,7 +44,7 @@ public class RequestRegistry {
     }
 
     public static RequestRegistry loadFrom(ConfigurationWrapper<?> section) {
-        LinkedHashMap<String, AliyunUpdateRequest> data = new LinkedHashMap<>();
+        LinkedHashMap<String, UpdateRequest> data = new LinkedHashMap<>();
         if (section == null) return new RequestRegistry(data);
         for (String taskName : section.getKeys(false)) {
             ConfigurationWrapper<?> requestSection = section.getConfigurationSection(taskName);
@@ -68,8 +68,13 @@ public class RequestRegistry {
         return new RequestRegistry(data);
     }
 
-    public static RequestRegistry defaults() {
-        LinkedHashMap<String, AliyunUpdateRequest> data = new LinkedHashMap<>();
+    /**
+     * 示例
+     *
+     * @return 示例
+     */
+    public static RequestRegistry example() {
+        LinkedHashMap<String, UpdateRequest> data = new LinkedHashMap<>();
         data.put("demo", new AliyunUpdateRequest("YOUR-ACCESS-KEY", "YOUR-ACCESS-SECRET", "example.com", "@", false));
         return new RequestRegistry(data);
     }

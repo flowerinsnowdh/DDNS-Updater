@@ -20,7 +20,10 @@ public class FileUtils {
         if (newName.equals(file.getName())) return;
         File newFile = new File(file.getParent(), newName);
         // the new name of file exists then return false
-        if (newFile.exists()) newFile.delete();
+        if (newFile.exists()) {
+            //noinspection ResultOfMethodCallIgnored
+            newFile.delete();
+        }
 
         try (InputStream input = Files.newInputStream(file.toPath());
              OutputStream output = Files.newOutputStream(newFile.toPath())) {

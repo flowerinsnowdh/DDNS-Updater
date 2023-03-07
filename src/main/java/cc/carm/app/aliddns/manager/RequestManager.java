@@ -4,7 +4,7 @@ import cc.carm.app.aliddns.Main;
 import cc.carm.app.aliddns.conf.AppConfig;
 import cc.carm.app.aliddns.conf.QueryConfig;
 import cc.carm.app.aliddns.model.RequestRegistry;
-import cc.carm.app.aliddns.model.AliyunUpdateRequest;
+import cc.carm.app.aliddns.model.UpdateRequest;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -18,7 +18,7 @@ import java.util.Map;
 public class RequestManager {
 
     private final SimpleDateFormat format;
-    public final HashMap<String, AliyunUpdateRequest> requests;
+    public final HashMap<String, UpdateRequest> requests;
 
     public RequestManager() {
         this.requests = new HashMap<>();
@@ -51,8 +51,8 @@ public class RequestManager {
         }
 
         Main.info("执行更新任务列表...");
-        for (Map.Entry<String, AliyunUpdateRequest> entry : getRequests().entrySet()) {
-            AliyunUpdateRequest currentRequest = entry.getValue();
+        for (Map.Entry<String, UpdateRequest> entry : getRequests().entrySet()) {
+            UpdateRequest currentRequest = entry.getValue();
             if (currentRequest.isIPv6() && ipv6 == null) {
                 Main.info("记录 [" + entry.getKey() + "] 为IPv6任务，但本实例未启用IPv6，跳过。");
                 continue;
@@ -68,7 +68,7 @@ public class RequestManager {
         getRegistry().countUpdate();
     }
 
-    public HashMap<String, AliyunUpdateRequest> getRequests() {
+    public HashMap<String, UpdateRequest> getRequests() {
         return new HashMap<>(getRegistry().listRequests());
     }
 

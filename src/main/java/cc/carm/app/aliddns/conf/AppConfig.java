@@ -33,6 +33,6 @@ public class AppConfig extends ConfigurationRoot {
     public static final ConfigValue<RequestRegistry> REQUESTS = ConfiguredSection.builder(RequestRegistry.class)
             .parseValue((w, d) -> RequestRegistry.loadFrom(w))
             .serializeValue(RequestRegistry::serialize)
-            .defaults(RequestRegistry.defaults())
+            .defaults(RequestRegistry.example())
             .build();
 }
