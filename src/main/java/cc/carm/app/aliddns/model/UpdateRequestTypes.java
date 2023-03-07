@@ -36,7 +36,10 @@ public class UpdateRequestTypes {
                             config.getString("record", "xx"),
                             config.getBoolean("ipv6", false),
                             config.getString("zone-identifier", "xx"),
-                            config.getString("identifier", "xx")
+                            config.getString("identifier", "xx"),
+                            config.getLong("ttl", 1L),
+                            config.getBoolean("proxied", false),
+                            config.getString("comments")
                     )
     );
 
