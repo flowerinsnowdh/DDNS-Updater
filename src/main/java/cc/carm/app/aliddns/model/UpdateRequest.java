@@ -1,7 +1,5 @@
 package cc.carm.app.aliddns.model;
 
-import com.aliyuncs.exceptions.ClientException;
-
 import java.util.Map;
 
 public interface UpdateRequest {
@@ -10,12 +8,12 @@ public interface UpdateRequest {
      *
      * @return 请求类型
      */
-    UpdateRequestType getType();
+    UpdateRequestTypes.UpdateRequestType<?> getType();
 
     /**
      * 获取请求类型序列化名
      *
-     * @see UpdateRequestType#id
+     * @see UpdateRequestTypes.UpdateRequestType#id
      * @return 请求类型序列化名
      */
     String getTypeID();
@@ -54,7 +52,7 @@ public interface UpdateRequest {
      *
      * @param currentValue 当前数值内容
      */
-    void doUpdate(String currentValue) throws ClientException;
+    void doUpdate(String currentValue) throws UpdateException;
 
     /**
      * 获取记录类型

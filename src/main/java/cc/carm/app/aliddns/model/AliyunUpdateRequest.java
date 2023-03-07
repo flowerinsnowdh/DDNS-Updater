@@ -52,8 +52,8 @@ public class AliyunUpdateRequest extends AbstractUpdateRequest {
     }
 
     @Override
-    public UpdateRequestType getType() {
-        return UpdateRequestType.ALIYUN;
+    public UpdateRequestTypes.UpdateRequestType<AliyunUpdateRequest> getType() {
+        return UpdateRequestTypes.ALIYUN;
     }
 
     /**
@@ -62,7 +62,7 @@ public class AliyunUpdateRequest extends AbstractUpdateRequest {
      * @param currentValue 当前数值内容
      */
     @Override
-    public void doUpdate(String currentValue) throws ClientException {
+    public void doUpdate(String currentValue) throws UpdateException {
 
         DefaultProfile profile = DefaultProfile.getProfile(ServiceConfig.REGION_ID.getNotNull(), getAccessKey(), getAccessKeySecret());
         DefaultAcsClient client = new DefaultAcsClient(profile);
@@ -73,7 +73,12 @@ public class AliyunUpdateRequest extends AbstractUpdateRequest {
         describeDomainRecordsRequest.setType(getRecordType()); // 解析记录类型
 
         // 获取主域名的所有解析记录列表
-        DescribeDomainRecordsResponse describeDomainRecordsResponse = client.getAcsResponse(describeDomainRecordsRequest);
+        DescribeDomainRecordsResponse describeDomainRecordsResponse;
+        try {
+            describeDomainRecordsResponse = client.getAcsResponse(describeDomainRecordsRequest);
+        } catch (ClientException e) {
+            throw new UpdateException(e);
+        }
         Main.debug(" \n" + JSON.toJSONString(describeDomainRecordsResponse, true));
 
         // 最新的一条解析记录
@@ -97,7 +102,12 @@ public class AliyunUpdateRequest extends AbstractUpdateRequest {
             updateDomainRecordRequest.setType(getRecordType());
 
             //发出请求，收到回复
-            UpdateDomainRecordResponse updateDomainRecordResponse = client.getAcsResponse(updateDomainRecordRequest);
+            UpdateDomainRecordResponse updateDomainRecordResponse;
+            try {
+                updateDomainRecordResponse = client.getAcsResponse(updateDomainRecordRequest);
+            } catch (ClientException e) {
+                throw new UpdateException(e);
+            }
             Main.debug(" \n" + JSON.toJSONString(updateDomainRecordResponse, true));
 
             if (recordID.equals(updateDomainRecordResponse.getRecordId())) {

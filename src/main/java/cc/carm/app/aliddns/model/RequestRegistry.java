@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 // 配置文件的requests节点
 public class RequestRegistry {
@@ -50,20 +51,25 @@ public class RequestRegistry {
             ConfigurationWrapper<?> requestSection = section.getConfigurationSection(taskName);
             if (requestSection == null) continue;
 
-            AliyunUpdateRequest request = new AliyunUpdateRequest(
-                    requestSection.getString("access-key", "xx"),
-                    requestSection.getString("access-secret", "xx"),
-                    requestSection.getString("domain", "xx"),
-                    requestSection.getString("record", "xx"),
-                    requestSection.getBoolean("ipv6", false)
-            );
+            String type = requestSection.getString("type");
 
-            if (request.isIPv6() && !RequestManager.isIPV6Enabled()) {
-                Main.info("记录 [" + taskName + "] 为IPv6任务，但本实例未启用IPv6，跳过加载。");
-                continue;
+            Optional<UpdateRequestTypes.UpdateRequestType<?>> optType = UpdateRequestTypes.getByID(type);
+            if (optType.isPresent()) {
+                UpdateRequest request;
+                try {
+                    request = optType.get().create(requestSection);
+                } catch (IllegalArgumentException ex) {
+                    Main.info("记录 [" + taskName + "] 加载出现错误，可能是配置文件格式不正确。跳过加载。");
+                    ex.printStackTrace();
+                    continue;
+                }
+                if (request.isIPv6() && !RequestManager.isIPV6Enabled()) {
+                    Main.info("记录 [" + taskName + "] 为IPv6任务，但本实例未启用IPv6，跳过加载。");
+                    continue;
+                }
+
+                data.put(taskName, request);
             }
-
-            data.put(taskName, request);
         }
         return new RequestRegistry(data);
     }

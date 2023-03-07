@@ -1,6 +1,5 @@
 package cc.carm.app.aliddns.model;
 
-import com.aliyuncs.exceptions.ClientException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -38,12 +37,12 @@ public class CloudflareV4UpdateRequest extends AbstractUpdateRequest {
     }
 
     @Override
-    public UpdateRequestType getType() {
-        return UpdateRequestType.CLOUDFLARE_V4;
+    public UpdateRequestTypes.UpdateRequestType<CloudflareV4UpdateRequest> getType() {
+        return UpdateRequestTypes.CLOUDFLARE_V4;
     }
 
     @Override
-    public void doUpdate(String currentValue) throws ClientException {
+    public void doUpdate(String currentValue) {
         // TODO Update action
     }
 }
