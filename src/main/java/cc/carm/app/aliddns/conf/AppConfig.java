@@ -10,10 +10,10 @@ import cc.carm.lib.configuration.core.value.type.ConfiguredValue;
 @SuppressWarnings("unused")
 public class AppConfig extends ConfigurationRoot {
 
-    public static final double CURRENT_VERSION = 2.0;
+    public static final double CURRENT_VERSION = 3.0;
 
     @HeaderComment("配置文件版本，请不要修改。")
-    public static final ConfigValue<Double> VERSION = ConfiguredValue.of(Double.class, 2.0D);
+    public static final ConfigValue<Double> VERSION = ConfiguredValue.of(Double.class, 3.0);
 
     @HeaderComment("是否输出域名记录查询返回信息。(用于调试)")
     public static final ConfigValue<Boolean> DEBUG = ConfiguredValue.of(Boolean.class, false);

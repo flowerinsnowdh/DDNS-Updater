@@ -24,7 +24,7 @@ java -jar AliDDNS-Updater-<version>.jar
 
 ```yaml
 # 配置文件版本，请不要修改。
-version: 2.0
+version: 3.0
 
 # 是否输出域名记录查询返回信息。(用于调试)
 debug: false
