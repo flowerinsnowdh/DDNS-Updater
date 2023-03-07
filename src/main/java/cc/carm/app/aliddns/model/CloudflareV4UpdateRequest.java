@@ -20,6 +20,8 @@ import java.util.Map;
  * <ul>
  *     <li>zone-identifier</li>
  *     <li>identifier</li>
+ *     <li>auth-email</li>
+ *     <li>auth-key</li>
  * </ul>
  * <p>还有三个可选字段</p>
  * <ul>
@@ -46,17 +48,21 @@ public class CloudflareV4UpdateRequest extends AbstractUpdateRequest {
     public final long ttl;
     public final boolean proxied;
     public final String comments;
+    public final String authEmail;
+    public final String authKey;
 
-    public CloudflareV4UpdateRequest(String domain, String record, boolean ipv6, @NotNull String zoneIdentifier, @NotNull String identifier) {
-        this(domain, record, ipv6, zoneIdentifier, identifier, 1L, false, null);
+    public CloudflareV4UpdateRequest(String domain, String record, boolean ipv6, @NotNull String zoneIdentifier, @NotNull String identifier, @NotNull String authEmail, @NotNull String authKey) {
+        this(domain, record, ipv6, zoneIdentifier, identifier, authEmail, authKey, 1L, false, null);
     }
 
-    public CloudflareV4UpdateRequest(String domain, String record, boolean ipv6, @NotNull String zoneIdentifier, @NotNull String identifier,
+    public CloudflareV4UpdateRequest(String domain, String record, boolean ipv6, @NotNull String zoneIdentifier, @NotNull String identifier, @NotNull String authEmail, @NotNull String authKey,
                                      long ttl, boolean proxied, String comments
     ) {
         super(domain, record, ipv6);
         this.zoneIdentifier = zoneIdentifier;
         this.identifier = identifier;
+        this.authEmail = authEmail;
+        this.authKey = authKey;
         this.ttl = ttl;
         this.proxied = proxied;
         this.comments = comments;
@@ -66,6 +72,8 @@ public class CloudflareV4UpdateRequest extends AbstractUpdateRequest {
     public void serialize(Map<String, Object> data) {
         data.put("zone-identifier", this.zoneIdentifier);
         data.put("identifier", this.identifier);
+        data.put("auth-email", this.authEmail);
+        data.put("auth-key", this.authKey);
         data.put("ttl", this.ttl);
         data.put("proxied", this.proxied);
         data.put("comments", comments);
@@ -85,6 +93,8 @@ public class CloudflareV4UpdateRequest extends AbstractUpdateRequest {
             URL url = new URL("https://api.cloudflare.com/client/v4/zones/" + zoneIdentifier + "/dns_records/" + identifier);
             conn = (HttpsURLConnection) url.openConnection();
             conn.setRequestMethod("PUT");
+            conn.setRequestProperty("X-Auth-Email", authEmail);
+            conn.setRequestProperty("X-Auth-Key", authKey);
             (out = conn.getOutputStream()).write(
                     JSON.toJSONString(new JsonCloudFlareV4DNSUpdate(
                             getRecordType(), getFullDomain(), currentValue, ttl, proxied, comments, null
