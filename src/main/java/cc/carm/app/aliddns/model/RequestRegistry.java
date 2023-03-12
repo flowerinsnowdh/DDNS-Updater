@@ -7,7 +7,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
+// 配置文件的requests节点
 public class RequestRegistry {
 
     protected final LinkedHashMap<String, UpdateRequest> requests;
@@ -17,7 +19,7 @@ public class RequestRegistry {
     public RequestRegistry(LinkedHashMap<String, UpdateRequest> requests) {
         this.requests = requests;
         this.updateCount = 1;
-        this.hasV6Request = requests.values().stream().anyMatch(UpdateRequest::isIpv6);
+        this.hasV6Request = requests.values().stream().anyMatch(UpdateRequest::isIPv6);
     }
 
     public LinkedHashMap<String, UpdateRequest> listRequests() {
@@ -49,27 +51,39 @@ public class RequestRegistry {
             ConfigurationWrapper<?> requestSection = section.getConfigurationSection(taskName);
             if (requestSection == null) continue;
 
-            UpdateRequest request = new UpdateRequest(
-                    requestSection.getString("access-key", "xx"),
-                    requestSection.getString("access-secret", "xx"),
-                    requestSection.getString("domain", "xx"),
-                    requestSection.getString("record", "xx"),
-                    requestSection.getBoolean("ipv6", false)
-            );
+            String type = requestSection.getString("type");
 
-            if (request.isIpv6() && !RequestManager.isIPV6Enabled()) {
-                Main.info("记录 [" + taskName + "] 为IPv6任务，但本实例未启用IPv6，跳过加载。");
-                continue;
+            Optional<UpdateRequestTypes.UpdateRequestType<?>> optType = UpdateRequestTypes.getByID(type);
+            if (optType.isPresent()) {
+                UpdateRequest request;
+                try {
+                    request = optType.get().create(requestSection);
+                } catch (IllegalArgumentException ex) {
+                    Main.info("记录 [" + taskName + "] 加载出现错误，可能是配置文件格式不正确。跳过加载。");
+                    ex.printStackTrace();
+                    continue;
+                }
+                if (request.isIPv6() && !RequestManager.isIPV6Enabled()) {
+                    Main.info("记录 [" + taskName + "] 为IPv6任务，但本实例未启用IPv6，跳过加载。");
+                    continue;
+                }
+
+                data.put(taskName, request);
+            } else {
+                Main.info("记录 [" + taskName + "] 的类型 [" + type + "] 未知，跳过加载。");
             }
-
-            data.put(taskName, request);
         }
         return new RequestRegistry(data);
     }
 
-    public static RequestRegistry defaults() {
+    /**
+     * 示例
+     *
+     * @return 示例
+     */
+    public static RequestRegistry example() {
         LinkedHashMap<String, UpdateRequest> data = new LinkedHashMap<>();
-        data.put("demo", new UpdateRequest("YOUR-ACCESS-KEY", "YOUR-ACCESS-SECRET", "example.com", "@", false));
+        data.put("demo", new AliyunUpdateRequest("YOUR-ACCESS-KEY", "YOUR-ACCESS-SECRET", "example.com", "@", false));
         return new RequestRegistry(data);
     }
 
