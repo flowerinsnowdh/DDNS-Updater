@@ -6,12 +6,14 @@
 
 阿里云服务，域名DDNS更新器，支持IPV6。
 
+已添加Cloudflare DNS服务商（非原作者，不代表原作者的代码）
+
 ## 使用方法
 
 下载后，放到单独的文件夹内，在控制台中执行以下命令即可运行。
 
 ```shell
-java -jar AliDDNS-Updater-<version>.jar
+java -jar aliddns-updater-<version>.jar
 ```
 
 执行后，您应当看到以下内容输出：
@@ -24,7 +26,7 @@ java -jar AliDDNS-Updater-<version>.jar
 
 ```yaml
 # 配置文件版本，请不要修改。
-version: 2.0
+version: 3.0
 
 # 是否输出域名记录查询返回信息。(用于调试)
 debug: false
@@ -49,11 +51,36 @@ query:
 # 具体配置请参考 https://github.com/CarmJos/AliDDNS-Updater/blob/master/.doc/REQUEST.md
 requests:
   demo:
+    type: aliyun
     domain: example.com
     record: '@'
     ipv6: false
     access-key: YOUR-ACCESS-KEY
     access-secret: YOUR-ACCESS-SECRET
+```
+
+`requests`支持Cloudflare类型，只需将`type`改为`cloudflare`，并添加对应的参数
+```yaml
+democf:
+  type: cloudflare
+  domain: example.net
+  record: www
+  ipv6: false
+  # 区域ID，可在网站概述-右侧API分区-区域 ID查看
+  zone-identifier: 0123456789abcdef0123456789abcdef
+  # Cloudflare账户ID
+  auth-email: 'admin@example.net'
+  # Cloudflare API密钥
+  # 可在主页-我的个人资料-API令牌-API 密钥-Global API Key-查看 中查看
+  auth-key: fedcba9876543210fedcba9876543210
+  # 可选；TTL，默认1
+  # 单位：秒；当值为1时表示自动
+  ttl: 1
+  # 可选；是否走Cloudflare CDN代理
+  # 默认false
+  proxied: false
+  # 注释
+  comments: null
 ```
 
 ## 视频教程
