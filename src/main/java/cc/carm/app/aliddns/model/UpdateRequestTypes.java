@@ -36,7 +36,6 @@ public class UpdateRequestTypes {
                             config.getString("record", "xx"),
                             config.getBoolean("ipv6", false),
                             config.getString("zone-identifier", "xx"),
-                            config.getString("identifier", "xx"),
                             config.getString("auth-email", "xx"),
                             config.getString("auth-key", "xx"),
                             config.getLong("ttl", 1L),

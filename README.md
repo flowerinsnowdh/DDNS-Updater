@@ -49,11 +49,28 @@ query:
 # 具体配置请参考 https://github.com/CarmJos/AliDDNS-Updater/blob/master/.doc/REQUEST.md
 requests:
   demo:
+    type: aliyun
     domain: example.com
     record: '@'
     ipv6: false
     access-key: YOUR-ACCESS-KEY
     access-secret: YOUR-ACCESS-SECRET
+```
+
+`requests`支持Cloudflare类型，只需将`type`改为`cloudflare`，并添加对应的参数
+```yaml
+democf:
+  type: cloudflare
+  domain: example.net
+  record: www
+  ipv6: false
+  # 区域ID，可在网站概述-右侧API分区-区域 ID查看
+  zone-identifier: 0123456789abcdef0123456789abcdef
+  # Cloudflare账户ID
+  auth-email: 'admin@example.net'
+  # Cloudflare API密钥
+  # 可在主页-我的个人资料-API令牌-API 密钥-Global API Key-查看 中查看
+  auth-key: fedcba9876543210fedcba9876543210
 ```
 
 ## 视频教程
