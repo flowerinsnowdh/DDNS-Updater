@@ -99,7 +99,7 @@ public class CloudflareV4UpdateRequest extends AbstractUpdateRequest {
                 JsonListDnsRecordsResponse json = JSON.parseObject(EntityUtils.toString(resp.getEntity()), JsonListDnsRecordsResponse.class);
                 // 寻找同名的记录
                 Optional<JsonListDnsRecordsResponse.Result> optResult = json.result.stream().filter(res ->
-                    CloudflareV4UpdateRequest.this.getFullDomain().equals(res.name)
+                    CloudflareV4UpdateRequest.this.getFullDomain().equals(res.name) && res.type.equals(getRecordType())
                 ).findAny();
                 if (optResult.isPresent()) {
                     id[0] = optResult.get().id;
