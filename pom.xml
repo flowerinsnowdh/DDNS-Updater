@@ -120,7 +120,7 @@
         <dependency>
             <groupId>cc.carm.lib</groupId>
             <artifactId>easyconfiguration-yaml</artifactId>
-            <version>3.4.0</version>
+            <version>3.8.0</version>
             <scope>compile</scope>
         </dependency>
 
@@ -134,7 +134,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>23.0.0</version>
+            <version>24.1.0</version>
             <scope>compile</scope>
         </dependency>
 
@@ -149,6 +149,7 @@
             <groupId>org.apache.httpcomponents.client5</groupId>
             <artifactId>httpclient5</artifactId>
             <version>5.2.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
