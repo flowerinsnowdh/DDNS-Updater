@@ -30,7 +30,9 @@ public class AppConfig extends ConfigurationRoot {
             "", "更新任务配置。",
             "具体配置请参考 https://github.com/CarmJos/AliDDNS-Updater/blob/master/.doc/REQUEST.md",
     })
-    public static final ConfigValue<RequestRegistry> REQUESTS = ConfiguredSection.builder(RequestRegistry.class)
+    public static final ConfigValue<RequestRegistry> REQUESTS = ConfiguredSection.builder()
+            .asValue(RequestRegistry.class)
+            .fromSection()
             .parseValue((w, d) -> RequestRegistry.loadFrom(w))
             .serializeValue(RequestRegistry::serialize)
             .defaults(RequestRegistry.example())

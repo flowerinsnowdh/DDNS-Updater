@@ -63,7 +63,7 @@ public class RequestRegistry {
                     ex.printStackTrace();
                     continue;
                 }
-                if (request.isIPv6() && !RequestManager.isIPV6Enabled()) {
+                if (request.isIPv6() && !RequestManager.isIPV6QueryEnabled() && !RequestManager.isIPV6InterfaceEnabled()) {
                     Main.info("记录 [" + taskName + "] 为IPv6任务，但本实例未启用IPv6，跳过加载。");
                     continue;
                 }

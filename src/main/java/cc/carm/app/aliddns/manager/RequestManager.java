@@ -8,10 +8,10 @@ import cc.carm.app.aliddns.model.UpdateRequest;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,9 +26,14 @@ public class RequestManager {
 
     }
 
-    public static boolean isIPV6Enabled() {
+    public static boolean isIPV6QueryEnabled() {
         String v6URL = QueryConfig.V6.get();
-        return v6URL != null && v6URL.length() > 0;
+        return v6URL != null && !v6URL.isEmpty();
+    }
+
+    public static boolean isIPV6InterfaceEnabled() {
+        String interface_ = QueryConfig.V6Interface.INTERFACE.get();
+        return interface_ != null && !interface_.isEmpty();
     }
 
     public RequestRegistry getRegistry() {
@@ -44,10 +49,33 @@ public class RequestManager {
         Main.info("     获取完成，当前IPv4地址为 " + ipv4);
 
         String ipv6 = null;
-        if (isIPV6Enabled() && getRegistry().hasV6Request()) {
-            Main.info("从 " + QueryConfig.V6.getNotNull() + " 获取IPv6地址...");
-            ipv6 = getCurrentHostIP(true);
-            Main.info("     获取完成，当前IPv6地址为 " + ipv6);
+        if (getRegistry().hasV6Request()) {
+            if (isIPV6QueryEnabled()) {
+                Main.info("从 " + QueryConfig.V6.getNotNull() + " 获取IPv6地址...");
+                ipv6 = getCurrentHostIP(true);
+                Main.info("     获取完成，当前IPv6地址为 " + ipv6);
+            } else if (isIPV6InterfaceEnabled()) {
+                final String configuredInterfaceName = QueryConfig.V6Interface.INTERFACE.getNotNull();
+                System.out.println(configuredInterfaceName);
+                Main.info("从网络接入点 " + configuredInterfaceName + " 获取IPv6地址...");
+                try {
+                    Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+                    while (networkInterfaces.hasMoreElements()) {
+                        NetworkInterface networkInterface = networkInterfaces.nextElement();
+                        if (configuredInterfaceName.equals(networkInterface.getName())) {
+                            InterfaceAddress address = networkInterface.getInterfaceAddresses().get(QueryConfig.V6Interface.INDEX.getNotNull());
+                            ipv6 = address.getAddress().getHostAddress();
+                            if (ipv6.endsWith("%" + networkInterface.getName())) {
+                                ipv6 = ipv6.substring(0, ipv6.length() - ("%" + networkInterface.getName()).length());
+                            }
+                            break;
+                        }
+                    }
+                    Main.info("     获取完成，当前IPv6地址为 " + ipv6);
+                } catch (SocketException | ArrayIndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         Main.info("执行更新任务列表...");
